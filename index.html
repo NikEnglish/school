@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Школьный сайт</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Школьный сайт</h1>
+    </header>
+    
+    <main>
+        <section id="auth-section">
+            <h2>Вход / Регистрация</h2>
+            <form id="login-form">
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Пароль" required>
+                <button type="submit">Войти</button>
+            </form>
+            <button id="show-register-btn">Регистрация</button>
+            
+            <form id="register-form" style="display: none;">
+                <input type="email" id="reg-email" placeholder="Email" required>
+                <input type="password" id="reg-password" placeholder="Пароль" required>
+                <select id="role" required>
+                    <option value="">Выберите роль</option>
+                    <option value="teacher">Учитель</option>
+                    <option value="student">Ученик</option>
+                </select>
+                <input type="text" id="fullName" placeholder="ФИО" required>
+                <input type="number" id="classNumber" placeholder="Класс" required>
+                <button type="submit">Зарегистрироваться</button>
+            </form>
+        </section>
+
+        <div id="dashboard"></div>
+    </main>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
