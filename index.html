@@ -7,99 +7,104 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            line-height: 1.6;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
 
         header {
-            background-color: #333;
-            color: white;
             text-align: center;
-            padding: 1rem;
+            margin-bottom: 20px;
         }
 
-        main {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        nav {
-            background-color: #333;
-            color: white;
-            padding: 1rem;
-            text-align: center;
-        }
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin-right: 20px;
-        }
-        nav a:hover {
-            text-decoration: underline;
+        h1 {
+            color: #333;
         }
 
         form {
-            display: flex;
-            flex-direction: column;
+            max-width: 400px;
         }
 
-        input, select {
-            margin-bottom: 10px;
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
             padding: 8px;
-            border: 1px solid #ccc;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
 
-        button[type="submit"] {
-            background-color: #333;
+        button {
+            background-color: #4CAF50;
             color: white;
+            padding: 10px 15px;
             border: none;
-            padding: 8px 16px;
             cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
         }
 
         button:hover {
-            background-color: #555;
+            background-color: #45a049;
         }
 
-        .page {
+        .auth-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .page.active {
             display: none;
         }
-        .page.active {
-            display: block;
+
+        #dashboard-page {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Школьный сайт</h1>
-    </header>
-
-    <main>
-        <nav>
-            <button id="auth-button">Войти / Зарегистрироваться</button>
-        </nav>
-
-        <div class="page active" id="auth-page">
+    <div id="auth-page" class="auth-page">
+        <div class="container">
+            <header>
+                <h1>Авторизация</h1>
+            </header>
             <form id="auth-form">
-                <input type="email" id="email" placeholder="Email" required>
-                <input type="password" id="password" placeholder="Пароль" required>
-                <select id="role" required>
+                <label for="login">Логин:</label>
+                <input type="text" id="login" name="login" required>
+
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="password" required>
+
+                <label for="role">Роль:</label>
+                <select id="role" name="role" required>
                     <option value="">Выберите роль</option>
+                    <option value="student">Студент</option>
                     <option value="teacher">Учитель</option>
-                    <option value="student">Ученик</option>
                 </select>
-                <button type="submit">Зарегистрироваться</button>
+
+                <button type="submit">Войти</button>
             </form>
         </div>
+    </div>
 
-        <div class="page" id="dashboard-page">
-            <h2>Дashboard</h2>
-            <!-- Здесь будет содержимое dashboard -->
-        </div>
-    </main>
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
