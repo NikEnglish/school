@@ -16,24 +16,16 @@ const db = getDatabase(app);
 let currentUser;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Функция для проверки и создания структуры базы данных
-    function checkAndCreateDatabaseStructure() {
+    // Функция для создания структуры базы данных
+    function createDatabaseStructure() {
         const usersRef = ref(db, 'users/');
         const gradesRef = ref(db, 'grades/');
 
-        // Проверяем существование папок пользователей и оценок
-        get(child(db, 'users')).then((snapshot) => {
-            if (!snapshot.exists()) {
-                console.log('Структура базы данных не существует. Создаем...');
-                set(usersRef, {});
-                set(gradesRef, {});
-                console.log('Структура базы данных успешно создана.');
-            } else {
-                console.log('Структура базы данных уже существует.');
-            }
-        }).catch((error) => {
-            console.error('Ошибка при проверке структуры базы данных:', error);
-        });
+        // Создаем папки пользователей и оценок
+        set(usersRef, {});
+        set(gradesRef, {});
+
+        console.log('Структура базы данных успешно создана.');
     }
 
     // Обработка формы входа/регистрации
@@ -44,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const role = document.getElementById('role').value;
 
         try {
-            await signInWithEmailAndPassword(auth, email, password)
+            await createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     currentUser = userCredential.user;
                     saveUserToDatabase(email, role);
@@ -52,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
         } catch (error) {
             console.error(error);
-            alert('Ошибка при входе или регистрации');
+            alert('Ошибка при регистрации');
         }
     });
 
@@ -75,6 +67,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // в зависимости от выбранной роли
     }
 
-    // Вызываем функцию для проверки и создания структуры базы данных при загрузке страницы
-    checkAndCreateDatabaseStructure();
+    // Вызываем функцию для создания структуры базы данных при загрузке страницы
+    createDatabaseStructure();
+
+    // Добавляем обработчик для кнопки авторизации
+    document.getElementById('auth-button').addEventListener('click', () => {
+        document.querySelector('.page.active').classList.remove('active');
+        document.getElementById('auth-page').classList.add('active');
+    });
 });
