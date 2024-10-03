@@ -31,29 +31,32 @@ document.addEventListener('DOMContentLoaded', function() {
     // Обработка формы входа/регистрации
     document.getElementById('auth-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = document.getElementById('email').value;
+        const login = document.getElementById('login').value;
         const password = document.getElementById('password').value;
-        const role = document.getElementById('role').value;
 
         try {
-            await createUserWithEmailAndPassword(auth, email, password)
+            await signInWithEmailAndPassword(auth, login, password)
                 .then((userCredential) => {
                     currentUser = userCredential.user;
-                    saveUserToDatabase(email, role);
+                    saveUserData(userCredential.user.uid);
                     showDashboardPage();
+                })
+                .catch((error) => {
+                    console.error("Ошибка:", error.message);
+                    alert("Неверный логин или пароль");
                 });
         } catch (error) {
             console.error(error);
-            alert('Ошибка при регистрации');
+            alert('Ошибка при входе');
         }
     });
 
-    // Функция для сохранения пользователя в базе данных
-    function saveUserToDatabase(email, role) {
-        const usersRef = ref(db, 'users/' + currentUser.uid);
+    // Функция для сохранения данных пользователя в базе данных
+    function saveUserData(userId) {
+        const usersRef = ref(db, 'users/' + userId);
         set(usersRef, {
-            email,
-            role,
+            login: document.getElementById('login').value,
+            password: document.getElementById('password').value,
             createdAt: new Date()
         });
     }
@@ -63,8 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('.page.active').classList.remove('active');
         document.getElementById('dashboard-page').classList.add('active');
 
-        // Здесь можно добавить логику для отображения интерфейса учителя или ученика
-        // в зависимости от выбранной роли
+        // Здесь можно добавить логику для отображения интерфейса
     }
 
     // Вызываем функцию для создания структуры базы данных при загрузке страницы
