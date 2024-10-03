@@ -21,10 +21,14 @@ const db = getFirestore(app);
 
 let currentUser;
 
-// Show/hide register form
-document.getElementById('show-register-btn').addEventListener('click', () => {
-    document.getElementById('login-form').style.display = 'none';
-    document.getElementById('register-form').style.display = 'block';
+// Tab switching functionality
+document.querySelectorAll('#login-tab, #register-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelector('.active').classList.remove('active');
+        tab.classList.add('active');
+        document.getElementById('login-container').style.display = tab.id === 'login-tab' ? '' : 'none';
+        document.getElementById('register-container').style.display = tab.id === 'register-tab' ? '' : 'none';
+    });
 });
 
 // Login functionality
