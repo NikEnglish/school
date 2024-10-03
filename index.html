@@ -4,46 +4,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Школьный сайт</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+
+        nav {
+            background-color: #333;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input, select {
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button[type="submit"] {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+    </style>
 </head>
 <body>
     <header>
         <h1>Школьный сайт</h1>
     </header>
-    
+
     <main>
-        <section id="auth-section">
-            <h2>Вход / Регистрация</h2>
-            <nav>
-                <button id="login-tab" class="active">Вход</button>
-                <button id="register-tab">Регистрация</button>
-            </nav>
-            
-            <div id="login-container">
-                <form id="login-form">
-                    <input type="email" id="email" placeholder="Email" required>
-                    <input type="password" id="password" placeholder="Пароль" required>
-                    <button type="submit">Войти</button>
-                </form>
-            </div>
+        <nav>
+            <button id="login-tab" class="active">Вход / Регистрация</button>
+            <button id="dashboard-tab">Дashboard</button>
+        </nav>
 
-            <div id="register-container" style="display: none;">
-                <form id="register-form">
-                    <input type="email" id="reg-email" placeholder="Email" required>
-                    <input type="password" id="reg-password" placeholder="Пароль" required>
-                    <select id="role" required>
-                        <option value="">Выберите роль</option>
-                        <option value="teacher">Учитель</option>
-                        <option value="student">Ученик</option>
-                    </select>
-                    <input type="text" id="fullName" placeholder="ФИО" required>
-                    <input type="number" id="classNumber" placeholder="Класс" required>
-                    <button type="submit">Зарегистрироваться</button>
-                </form>
-            </div>
-        </section>
+        <div class="page active" id="auth-page">
+            <form id="auth-form">
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Пароль" required>
+                <select id="role" required>
+                    <option value="">Выберите роль</option>
+                    <option value="teacher">Учитель</option>
+                    <option value="student">Ученик</option>
+                </select>
+                <button type="submit">Войти / Зарегистрироваться</button>
+            </form>
+        </div>
 
-        <div id="dashboard"></div>
+        <div class="page" id="dashboard-page">
+            <h2>Дashboard</h2>
+            <!-- Здесь будет содержимое dashboard -->
+        </div>
     </main>
 
     <script src="script.js"></script>
