@@ -1,62 +1,58 @@
-// Инициализация Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyBAFDDqbYXjlpNW3UtMvCwA2M-bO9FsCNg",
-    authDomain: "school-bf2ca.firebaseapp.com",
-    projectId: "school-bf2ca",
-    storageBucket: "school-bf2ca.appspot.com",
-    messagingSenderId: "639707992069",
-    appId: "1:639707992069:web:575f6b016b474d77760c6c",
-    measurementId: "G-9B1J98D47F"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getDatabase(app);
-
 let currentUser;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Функция для создания структуры базы данных
-    function createDatabaseStructure() {
-        const usersRef = ref(db, 'users/');
-        const gradesRef = ref(db, 'grades/');
+    // Функция для создания структуры файлов
+    function createFilesStructure() {
+        if (!checkFileExists('users.txt')) {
+            createFileSync('users.txt', '');
+        }
+        if (!checkFileExists('grades.txt')) {
+            createFileSync('grades.txt', '');
+        }
+        console.log('Структура файлов успешно создана.');
+    }
 
-        // Создаем папки пользователей и оценок
-        set(usersRef, {});
-        set(gradesRef, {});
+    // Функция для проверки существования файла
+    function checkFileExists(filename) {
+        return fs.existsSync(filename);
+    }
 
-        console.log('Структура базы данных успешно создана.');
+    // Функция для синхронного создания файла
+    function createFileSync(filename, content) {
+        fs.writeFileSync(filename, content);
     }
 
     // Обработка формы входа/регистрации
     document.getElementById('auth-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const login = document.getElementById('login').value;
-        const password = document.getElementById('password').value;
+        const password = document.getElementById('password');
+        const role = document.getElementById('role');
 
-        try {
-            await signInWithEmailAndPassword(auth, login, password)
-                .then((userCredential) => {
-                    currentUser = userCredential.user;
-                    saveUserData(userCredential.user.uid);
-                    showDashboardPage();
-                })
-                .catch((error) => {
-                    console.error("Ошибка:", error.message);
-                    alert("Неверный логин или пароль");
-                });
-        } catch (error) {
-            console.error(error);
-            alert('Ошибка при входе');
+        // Проверяем существование пользователя в файле users.txt
+        const usersData = readFileSync('users.txt', 'utf8');
+        const userData = JSON.parse(usersData);
+
+        if (userData[login]) {
+            if (userData[login].password === password && userData[login].role === role.value) {
+                currentUser = { login, role: userData[login].role };
+                saveUserData(login);
+                showDashboardPage();
+            } else {
+                alert("Неверный пароль или роль");
+            }
+        } else {
+            alert("Пользователь не найден");
         }
     });
 
-    // Функция для сохранения данных пользователя в базе данных
-    function saveUserData(userId) {
-        const usersRef = ref(db, 'users/' + userId);
+    // Функция для сохранения данных пользователя в файл users.txt
+    function saveUserData(login) {
+        const usersRef = ref(db, 'users/' + login);
         set(usersRef, {
-            login: document.getElementById('login').value,
+            login,
             password: document.getElementById('password').value,
+            role: document.getElementById('role').value,
             createdAt: new Date()
         });
     }
@@ -69,8 +65,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Здесь можно добавить логику для отображения интерфейса
     }
 
-    // Вызываем функцию для создания структуры базы данных при загрузке страницы
-    createDatabaseStructure();
+    // Вызываем функцию для создания структуры файлов при загрузке страницы
+    createFilesStructure();
 
     // Добавляем обработчик для кнопки авторизации
     document.getElementById('auth-button').addEventListener('click', () => {
