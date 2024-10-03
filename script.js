@@ -1,16 +1,47 @@
 let currentUser;
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Функция для создания структуры файлов
-    function createFilesStructure() {
-        if (!checkFileExists('users.txt')) {
-            createFileSync('users.txt', '');
+const path = require('path');
+
+function getFilePath(filename) {
+    return path.join(__dirname, filename);
+}
+
+// Пример использования
+const usersPath = getFilePath('users.txt');
+const gradesPath = getFilePath('grades.txt');
+
+// Использование в функциях
+function createFilesStructure() {
+    const usersPath = getFilePath('users.txt');
+    const gradesPath = getFilePath('grades.txt');
+
+    if (!checkFileExists(usersPath)) {
+        try {
+            fs.writeFileSync(usersPath, '');
+            console.log('Файл users.txt успешно создан.');
+        } catch (error) {
+            console.error("Ошибка при создании файла users.txt:", error);
+            alert("Не удалось создать файл users.txt. Проверьте права доступа.");
+            return;
         }
-        if (!checkFileExists('grades.txt')) {
-            createFileSync('grades.txt', '');
-        }
-        console.log('Структура файлов успешно создана.');
     }
+
+    if (!checkFileExists(gradesPath)) {
+        try {
+            fs.writeFileSync(gradesPath, '{}');
+            console.log('Файл grades.txt успешно создан.');
+        } catch (error) {
+            console.error("Ошибка при создании файла grades.txt:", error);
+            alert("Не удалось создать файл grades.txt. Проверьте права доступа.");
+            return;
+        }
+    }
+
+    console.log('Структура файлов успешно создана.');
+}
+
+// Другие функции...
+
 
     // Функция для проверки существования файла
     function checkFileExists(filename) {
