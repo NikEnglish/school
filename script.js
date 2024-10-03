@@ -4,10 +4,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Функция для создания структуры файлов
     function createFilesStructure() {
         if (!checkFileExists('users.txt')) {
-            createFileSync('users.txt', '{}');
+            createFileSync('users.txt', '');
         }
         if (!checkFileExists('grades.txt')) {
-            createFileSync('grades.txt', '{}');
+            createFileSync('grades.txt', '');
         }
         console.log('Структура файлов успешно создана.');
     }
@@ -39,11 +39,20 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        const userData = JSON.parse(usersData);
+        const lines = usersData.split('\n');
+        let userData = {};
 
-        if (userData[login]) {
-            if (userData[login].password === password && userData[login].role === role.value) {
-                currentUser = { login, role: userData[login].role };
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (line.includes(':')) {
+                const [key, value] = line.split(':');
+                userData[key.trim()] = value.trim();
+            }
+        }
+
+        if (userData.login === login) {
+            if (userData.password === password && userData.role === role.value) {
+                currentUser = { login, role: userData.role };
                 saveUserData(login);
                 showDashboardPage();
             } else {
@@ -57,18 +66,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // Функция для сохранения данных пользователя в файл users.txt
     function saveUserData(login) {
         let usersData = readFileSync('users.txt', 'utf8');
-        let userData = JSON.parse(usersData);
+        const lines = usersData.split('\n');
 
-        if (!userData[login]) {
-            userData[login] = {
-                password: document.getElementById('password').value,
-                role: document.getElementById('role').value,
-                createdAt: new Date()
-            };
+        let userData = {};
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (line.includes(':')) {
+                const [key, value] = line.split(':');
+                userData[key.trim()] = value.trim();
+            }
+        }
+
+        userData.login = login;
+        userData.password = document.getElementById('password').value;
+        userData.role = document.getElementById('role').value;
+
+        let updatedUsersData = '';
+        for (const key in userData) {
+            updatedUsersData += `${key}:${userData[key]}\n`;
         }
 
         try {
-            fs.writeFileSync('users.txt', JSON.stringify(userData));
+            fs.writeFileSync('users.txt', updatedUsersData);
             console.log(`Данные пользователя ${login} успешно сохранены.`);
         } catch (error) {
             console.error("Ошибка при записи файла:", error);
