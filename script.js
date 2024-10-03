@@ -4,10 +4,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Функция для создания структуры файлов
     function createFilesStructure() {
         if (!checkFileExists('users.txt')) {
-            createFileSync('users.txt', '');
+            createFileSync('users.txt', '{}');
         }
         if (!checkFileExists('grades.txt')) {
-            createFileSync('grades.txt', '');
+            createFileSync('grades.txt', '{}');
         }
         console.log('Структура файлов успешно создана.');
     }
@@ -30,7 +30,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const role = document.getElementById('role');
 
         // Проверяем существование пользователя в файле users.txt
-        const usersData = readFileSync('users.txt', 'utf8');
+        let usersData = '';
+        try {
+            usersData = readFileSync('users.txt', 'utf8');
+        } catch (error) {
+            console.error("Ошибка при чтении файла:", error);
+            alert("Произошла ошибка при попытке доступа к файлу.");
+            return;
+        }
+
         const userData = JSON.parse(usersData);
 
         if (userData[login]) {
@@ -48,13 +56,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Функция для сохранения данных пользователя в файл users.txt
     function saveUserData(login) {
-        const usersRef = ref(db, 'users/' + login);
-        set(usersRef, {
-            login,
-            password: document.getElementById('password').value,
-            role: document.getElementById('role').value,
-            createdAt: new Date()
-        });
+        let usersData = readFileSync('users.txt', 'utf8');
+        let userData = JSON.parse(usersData);
+
+        if (!userData[login]) {
+            userData[login] = {
+                password: document.getElementById('password').value,
+                role: document.getElementById('role').value,
+                createdAt: new Date()
+            };
+        }
+
+        try {
+            fs.writeFileSync('users.txt', JSON.stringify(userData));
+            console.log(`Данные пользователя ${login} успешно сохранены.`);
+        } catch (error) {
+            console.error("Ошибка при записи файла:", error);
+            alert("Произошла ошибка при попытке записи в файл.");
+        }
     }
 
     // Функция для отображения страницы Dashboard
